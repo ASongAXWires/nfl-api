@@ -4,6 +4,7 @@
   "description": "In the initial commit to this project, you have been provided data about NFL teams. In a branch called `get-team-answer`, you are tasked with creating an Express server capable of responding to the following routes.",
   "main": ".eslintrc.js",
   "scripts": {
+    "dev": "./node_modules/.bin/nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -18,5 +19,8 @@
   "homepage": "https://github.com/ASongAXWires/nfl-api#readme",
   "dependencies": {
     "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "nodemon": "^1.19.4"
   }
 }

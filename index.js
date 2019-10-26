@@ -1,4 +1,5 @@
 const express = require('express')
+const bodyParser = require('body-parser')
 const teams = require('./teams.json')
 
 const app = express()
@@ -19,6 +20,21 @@ app.get('/teams/:identifier', (request, response) => {
     } else {
         response.sendStatus(404)
     }
+})
+
+app.use(bodyParser.json())
+
+app.post('/teams', (request, response) => {
+    const { id, location, mascot, abbreviation, conference, division } = request.body
+
+    if (!id || !location || !mascot || !abbreviation || !conference || !division) {
+        response.status(400).send('The follwing attributes are required: id, location, mascot, abbreviation, conference, division')
+    }
+
+    const newTeam = { id, location, mascot, abbreviation, conference, division }
+    teams.push(newTeam)
+
+    response.status(201).send(newTeam)
 })
 
 app.all('*', (request, response) => {

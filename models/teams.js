@@ -1,4 +1,4 @@
-const football = (connection, Sequelize) => {
+const teams = (connection, Sequelize) => {
     return connection.define('teams', {
         id: { type: Sequelize.INTEGER, autoIncrement: true, primaryKey: true },
         location: { type: Sequelize.STRING },
@@ -9,4 +9,4 @@ const football = (connection, Sequelize) => {
     }, { paranoid: true })
 }
 
-module.exports = football
+module.exports = teams

@@ -1,18 +1,23 @@
 const express = require('express')
 const bodyParser = require('body-parser')
-const teams = require('./teams.json')
+const models = require('./models')
+const Op = require('sequelize').Op
 
 const app = express()
 
-app.get('/teams', (request, response) => {
+app.get('/teams', async (request, response) => {
+    const teams = await models.teams.findAll()
+
     response.send(teams)
 })
 
-app.get('/teams/:identifier', (request, response) => {
-    const identifier = request.params.identifier
+app.get('/teams/:identifier', async (request, response) => {
+    const { identifier } = request.params
 
-    const matchingTeams = teams.filter((team) => {
-        return team.id === Number(identifier) || team.abbreviation === identifier.toUpperCase()
+    const matchingTeams = await models.teams.findAll({
+        where: {
+            [Op.or]: [{ id: identifier }, { abbreviation: identifier.toUpperCase() }]
+        }
     })
 
     if (matchingTeams.length) {
@@ -24,18 +29,21 @@ app.get('/teams/:identifier', (request, response) => {
 
 app.use(bodyParser.json())
 
-app.post('/teams', (request, response) => {
+app.post('/teams', async (request, response) => {
     const { id, location, mascot, abbreviation, conference, division } = request.body
 
     if (!id || !location || !mascot || !abbreviation || !conference || !division) {
         response.status(400).send('The follwing attributes are required: id, location, mascot, abbreviation, conference, division')
     }
 
-    const newTeam = { id, location, mascot, abbreviation, conference, division }
-    teams.push(newTeam)
+    const newTeam = await models.teams.create({
+        location, mascot, abbreviation, conference, division
+    })
 
     response.status(201).send(newTeam)
 })
+
+
 
 app.all('*', (request, response) => {
     response.sendStatus(404)
